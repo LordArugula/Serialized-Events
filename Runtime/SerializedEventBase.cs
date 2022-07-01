@@ -9,67 +9,11 @@ using Object = UnityEngine.Object;
 namespace Arugula.SerializedEvents
 {
     [Serializable]
-    public class SerializedCallback<T>
-        : IEnumerable<T>
+    public abstract class SerializedEventBase<T> : IEnumerable<T>, IEnumerable
         where T : Delegate
     {
         [SerializeField]
-        private List<SerializedDelegate<T>> delegates;
-
-        public SerializedCallback()
-        {
-            delegates = new List<SerializedDelegate<T>>();
-        }
-
-        public void Clear()
-        {
-            delegates.Clear();
-        }
-
-        public void Add(T listener)
-        {
-            SerializedDelegate<T> callback = new SerializedDelegate<T>(listener);
-            delegates.Add(callback);
-        }
-
-        public void Remove(T listener)
-        {
-            for (int i = delegates.Count - 1; i >= 0; i--)
-            {
-                if (delegates[i].Callback == listener)
-                {
-                    delegates.RemoveAt(i);
-                    return;
-                }
-            }
-        }
-
-        internal void Add(Object target, string methodName)
-        {
-            delegates.Add(new SerializedDelegate<T>(target, methodName));
-        }
-
-        internal void Remove(Object target, string methodName)
-        {
-            for (int i = delegates.Count - 1; i >= 0; i--)
-            {
-                if (delegates[i].Target == target && delegates[i].MethodName == methodName)
-                {
-                    delegates.RemoveAt(i);
-                    return;
-                }
-            }
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return new Enumerator(delegates);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return new Enumerator(delegates);
-        }
+        private List<SerializedDelegate<T>> callback;
 
         private class Enumerator : IEnumerator<T>, IEnumerator
         {
@@ -99,28 +43,44 @@ namespace Arugula.SerializedEvents
                 ((IEnumerator)enumerator).Reset();
             }
         }
-    }
-
-    [Serializable]
-    public abstract class SerializedEventBase<T>
-        where T : Delegate
-    {
-        [SerializeField]
-        protected SerializedCallback<T> callback;
 
         public SerializedEventBase()
         {
-            callback = new SerializedCallback<T>();
+            callback = new List<SerializedDelegate<T>>();
         }
 
         public void AddListener(T listener)
         {
-            callback.Add(listener);
+            if (listener == null)
+            {
+                return;
+            }
+
+            foreach (T _listener in listener.GetInvocationList())
+            {
+                SerializedDelegate<T> callback = new SerializedDelegate<T>(_listener);
+                this.callback.Add(callback);
+            }
         }
 
         public void RemoveListener(T listener)
         {
-            callback.Remove(listener);
+            if (listener == null)
+            {
+                return;
+            }
+
+            foreach (T _listener in listener.GetInvocationList())
+            {
+                for (int i = callback.Count - 1; i >= 0; i--)
+                {
+                    if (callback[i].Callback == _listener)
+                    {
+                        callback.RemoveAt(i);
+                        return;
+                    }
+                }
+            }
         }
 
         public void Clear()
@@ -130,12 +90,29 @@ namespace Arugula.SerializedEvents
 
         internal void AddListener(Object target, string methodName)
         {
-            callback.Add(target, methodName);
+            callback.Add(new SerializedDelegate<T>(target, methodName));
         }
 
         internal void RemoveListener(Object target, string methodName)
         {
-            callback.Remove(target, methodName);
+            for (int i = callback.Count - 1; i >= 0; i--)
+            {
+                if (callback[i].Target == target && callback[i].MethodName == methodName)
+                {
+                    callback.RemoveAt(i);
+                    return;
+                }
+            }
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return new Enumerator(callback);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new Enumerator(callback);
         }
     }
 }

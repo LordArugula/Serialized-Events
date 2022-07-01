@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 using UnityEngine;
 
@@ -27,40 +29,85 @@ namespace Arugula.SerializedEvents
 
     [Serializable]
     public class SerializedDelegate<T>
-        : SerializedDelegateBase
         where T : Delegate
     {
-        private T callback;
+        [SerializeField]
+        private Object target;
+
+        [SerializeField]
+        private string methodName;
+
+        [SerializeField, HideInInspector]
+        private bool skipSerialization;
+
+        public Object Target { get => target; set => target = value; }
+        public string MethodName { get => methodName; set => methodName = value; }
+
+        private T _callback;
 
         public SerializedDelegate(T callback)
-            : this(null, null)
         {
-            this.callback = callback;
+            if (callback.Target is Object obj)
+            {
+                target = obj;
+                methodName = callback.Method.Name;
+            }
+            else
+            {
+                if (!Application.isPlaying)
+                {
+                    throw new InvalidOperationException("Cannot serialize static or anonymous methods in the editor.");
+                }
+
+                skipSerialization = true;
+                Type targetType;
+                if (callback.Target == null)
+                {
+                    // Static method
+                    targetType = callback.Method.DeclaringType;
+                }
+                else
+                {
+                    // Anonymous method
+                    targetType = callback.Target.GetType();
+                    if (targetType.GetCustomAttribute<CompilerGeneratedAttribute>() != null)
+                    {
+                        skipSerialization = true;
+                        methodName = "Anonymous Method";
+                    }
+                }
+
+                methodName = $"{targetType.Name}.{callback.Method.Name}";
+            }
+            _callback = callback;
         }
 
-        public SerializedDelegate(Object target, string methodName)
-            : base(target, methodName)
+        internal SerializedDelegate(Object target, string methodName)
         {
-            callback = CreateDelegate();
+            skipSerialization = target == null;
+            this.target = target;
+            this.methodName = methodName;
+
+            _callback = CreateDelegate();
         }
 
         public T Callback
         {
             get
             {
-                if (callback == null)
+                if (_callback == null)
                 {
-                    callback = CreateDelegate();
+                    _callback = CreateDelegate();
                 }
-                return callback;
+                return _callback;
             }
 
-            set => callback = value;
+            set => _callback = value;
         }
 
         private T CreateDelegate()
         {
-            if (target == null || methodName == null)
+            if (skipSerialization || target == null || methodName == null)
             {
                 return null;
             }

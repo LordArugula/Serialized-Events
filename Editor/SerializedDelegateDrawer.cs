@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace Arugula.SerializedEvents.Editor
 {
-    [CustomPropertyDrawer(typeof(SerializedDelegateBase), true)]
+    [CustomPropertyDrawer(typeof(SerializedDelegate<>), true)]
     public class SerializedDelegateDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -22,13 +22,18 @@ namespace Arugula.SerializedEvents.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            SerializedProperty skipSerializationProperty = property.FindPropertyRelative("skipSerialization");
             SerializedProperty targetProperty = property.FindPropertyRelative("target");
             SerializedProperty methodNameProperty = property.FindPropertyRelative("methodName");
 
             Object target = targetProperty.objectReferenceValue;
 
             Rect targetRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
-            EditorGUI.ObjectField(targetRect, targetProperty);
+            bool skip = skipSerializationProperty.boolValue;
+            using (new EditorGUI.DisabledScope(skip))
+            {
+                EditorGUI.ObjectField(targetRect, targetProperty);
+            }
 
             Object newTarget = targetProperty.objectReferenceValue;
             if (DidTypeOfTargetChange(target, newTarget))
@@ -36,16 +41,23 @@ namespace Arugula.SerializedEvents.Editor
                 methodNameProperty.stringValue = null;
             }
 
-            using (new EditorGUI.DisabledScope(target == null))
+            using (new EditorGUI.DisabledScope(skip || target == null))
             {
-                MethodInfo invokeMethod = GetInvokeMethod();
-                ParameterInfo[] parameterInfos = invokeMethod.GetParameters();
-                Type targetReturnType = invokeMethod.ReturnType;
-                string methodDisplayName = GetMethodDisplayName(targetProperty, methodNameProperty, parameterInfos, targetReturnType);
                 Rect methodDropdownRect = new Rect(position.x, targetRect.yMax + EditorGUIUtility.standardVerticalSpacing, position.width, EditorGUIUtility.singleLineHeight);
-                if (EditorGUI.DropdownButton(methodDropdownRect, new GUIContent(methodDisplayName), FocusType.Keyboard))
+                if (skip)
                 {
-                    DoMethodDropdown(methodDropdownRect, targetProperty, methodNameProperty, parameterInfos, invokeMethod.ReturnType);
+                    _ = EditorGUI.DropdownButton(methodDropdownRect, new GUIContent(methodNameProperty.stringValue), FocusType.Keyboard);
+                }
+                else
+                {
+                    MethodInfo invokeMethod = GetInvokeMethod();
+                    ParameterInfo[] parameterInfos = invokeMethod.GetParameters();
+                    Type targetReturnType = invokeMethod.ReturnType;
+                    string methodDisplayName = GetMethodDisplayName(targetProperty, methodNameProperty, parameterInfos, targetReturnType);
+                    if (EditorGUI.DropdownButton(methodDropdownRect, new GUIContent(methodDisplayName), FocusType.Keyboard))
+                    {
+                        DoMethodDropdown(methodDropdownRect, targetProperty, methodNameProperty, parameterInfos, invokeMethod.ReturnType);
+                    }
                 }
             }
         }
@@ -157,7 +169,7 @@ namespace Arugula.SerializedEvents.Editor
 
         private bool DidTypeOfTargetChange(Object target, Object newTarget)
         {
-            return newTarget == null
+            return (target != null && newTarget == null)
                 || (target != null && target.GetType() != newTarget.GetType());
         }
 

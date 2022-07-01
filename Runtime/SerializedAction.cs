@@ -8,7 +8,7 @@ namespace Arugula.SerializedEvents
     {
         public void Invoke()
         {
-            foreach (Action action in callback)
+            foreach (Action action in this)
             {
                 action.Invoke();
             }
@@ -21,7 +21,7 @@ namespace Arugula.SerializedEvents
     {
         public void Invoke(T arg)
         {
-            foreach (Action<T> action in callback)
+            foreach (Action<T> action in this)
             {
                 action.Invoke(arg);
             }
@@ -34,7 +34,7 @@ namespace Arugula.SerializedEvents
     {
         public void Invoke(T1 arg1, T2 arg2)
         {
-            foreach (Action<T1, T2> action in callback)
+            foreach (Action<T1, T2> action in this)
             {
                 action.Invoke(arg1, arg2);
             }
@@ -47,7 +47,7 @@ namespace Arugula.SerializedEvents
     {
         public void Invoke(T1 arg1, T2 arg2, T3 arg3)
         {
-            foreach (Action<T1, T2, T3> action in callback)
+            foreach (Action<T1, T2, T3> action in this)
             {
                 action.Invoke(arg1, arg2, arg3);
             }
@@ -60,7 +60,7 @@ namespace Arugula.SerializedEvents
     {
         public void Invoke(T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
-            foreach (Action<T1, T2, T3, T4> action in callback)
+            foreach (Action<T1, T2, T3, T4> action in this)
             {
                 action.Invoke(arg1, arg2, arg3, arg4);
             }

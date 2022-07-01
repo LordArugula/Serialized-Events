@@ -9,7 +9,7 @@ namespace Arugula.SerializedEvents
         public TResult Invoke()
         {
             TResult result = default;
-            foreach (Func<TResult> func in callback)
+            foreach (Func<TResult> func in this)
             {
                 result = func.Invoke();
             }
@@ -24,7 +24,7 @@ namespace Arugula.SerializedEvents
         public TResult Invoke(T arg)
         {
             TResult result = default;
-            foreach (Func<T, TResult> func in callback)
+            foreach (Func<T, TResult> func in this)
             {
                 result = func.Invoke(arg);
             }
@@ -39,7 +39,7 @@ namespace Arugula.SerializedEvents
         public TResult Invoke(T1 arg1, T2 arg2)
         {
             TResult result = default;
-            foreach (Func<T1, T2, TResult> func in callback)
+            foreach (Func<T1, T2, TResult> func in this)
             {
                 result = func.Invoke(arg1, arg2);
             }
@@ -54,7 +54,7 @@ namespace Arugula.SerializedEvents
         public TResult Invoke(T1 arg1, T2 arg2, T3 arg3)
         {
             TResult result = default;
-            foreach (Func<T1, T2, T3, TResult> func in callback)
+            foreach (Func<T1, T2, T3, TResult> func in this)
             {
                 result = func.Invoke(arg1, arg2, arg3);
             }
@@ -69,7 +69,7 @@ namespace Arugula.SerializedEvents
         public TResult Invoke(T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
             TResult result = default;
-            foreach (Func<T1, T2, T3, T4, TResult> func in callback)
+            foreach (Func<T1, T2, T3, T4, TResult> func in this)
             {
                 result = func.Invoke(arg1, arg2, arg3, arg4);
             }

@@ -38,11 +38,10 @@ namespace Arugula.SerializedEvents.Editor
         private void InitializeList(SerializedProperty property, GUIContent label)
         {
             SerializedProperty callbackProperty = property.FindPropertyRelative("callback");
-            SerializedProperty delegateListProperty = callbackProperty.FindPropertyRelative("delegates");
 
             reorderableList = new ReorderableList(
                 property.serializedObject,
-                delegateListProperty,
+                callbackProperty,
                 true,
                 true,
                 true,
@@ -50,9 +49,19 @@ namespace Arugula.SerializedEvents.Editor
             {
                 drawHeaderCallback = (rect) => DrawHeader(rect, label),
                 drawElementCallback = DrawElement,
-                elementHeight = EditorGUIUtility.singleLineHeight + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing,
+                elementHeightCallback = GetElementHeight,
                 onAddCallback = AddElement,
             };
+        }
+
+        private float GetElementHeight(int index)
+        {
+            if (index >= reorderableList.serializedProperty.arraySize)
+            {
+                return 0;
+            }
+            SerializedProperty property = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            return EditorGUI.GetPropertyHeight(property, true);
         }
 
         private void AddElement(ReorderableList list)
@@ -118,7 +127,7 @@ namespace Arugula.SerializedEvents.Editor
             string formattedMethodLabel = builder.ToString();
             return formattedMethodLabel;
 
-            void AppendParameters(StringBuilder _builder, ParameterInfo[] _parameterInfos)
+            static void AppendParameters(StringBuilder _builder, ParameterInfo[] _parameterInfos)
             {
                 for (int i = 0; i < _parameterInfos.Length; i++)
                 {
