@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Arugula.SerializedEvents
+namespace Arugula.SerializedEvents.Samples
 {
     public class HealthUI : MonoBehaviour
     {

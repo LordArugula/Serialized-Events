@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Arugula.SerializedEvents
+namespace Arugula.SerializedEvents.Samples
 {
     public class GameManager : MonoBehaviour
     {
