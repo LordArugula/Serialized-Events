@@ -9,25 +9,6 @@ using Object = UnityEngine.Object;
 namespace Arugula.SerializedEvents
 {
     [Serializable]
-    public abstract class SerializedDelegateBase
-    {
-        [SerializeField]
-        protected Object target;
-
-        [SerializeField]
-        protected string methodName;
-
-        public Object Target { get => target; set => target = value; }
-        public string MethodName { get => methodName; set => methodName = value; }
-
-        public SerializedDelegateBase(Object target, string methodName)
-        {
-            this.target = target;
-            this.methodName = methodName;
-        }
-    }
-
-    [Serializable]
     public class SerializedDelegate<T>
         where T : Delegate
     {
@@ -37,8 +18,10 @@ namespace Arugula.SerializedEvents
         [SerializeField]
         private string methodName;
 
+#if UNITY_EDITOR
         [SerializeField, HideInInspector]
         private bool skipSerialization;
+#endif
 
         public Object Target { get => target; set => target = value; }
         public string MethodName { get => methodName; set => methodName = value; }
@@ -47,6 +30,9 @@ namespace Arugula.SerializedEvents
 
         public SerializedDelegate(T callback)
         {
+            _callback = callback;
+
+#if UNITY_EDITOR
             if (callback.Target is Object obj)
             {
                 target = obj;
@@ -65,23 +51,24 @@ namespace Arugula.SerializedEvents
                 {
                     // Static method
                     targetType = callback.Method.DeclaringType;
+                    methodName = $"{targetType.Name}.{callback.Method.Name}";
+                    return;
+                }
+
+                targetType = callback.Target.GetType();
+                if (targetType.GetCustomAttribute<CompilerGeneratedAttribute>() != null)
+                {
+                    methodName = "Anonymous Method";
                 }
                 else
                 {
-                    // Anonymous method
-                    targetType = callback.Target.GetType();
-                    if (targetType.GetCustomAttribute<CompilerGeneratedAttribute>() != null)
-                    {
-                        skipSerialization = true;
-                        methodName = "Anonymous Method";
-                    }
+                    methodName = $"{targetType.Name}.{callback.Method.Name}";
                 }
-
-                methodName = $"{targetType.Name}.{callback.Method.Name}";
             }
-            _callback = callback;
+#endif
         }
 
+#if UNITY_EDITOR
         internal SerializedDelegate(Object target, string methodName)
         {
             skipSerialization = target == null;
@@ -90,6 +77,7 @@ namespace Arugula.SerializedEvents
 
             _callback = CreateDelegate();
         }
+#endif
 
         public T Callback
         {

@@ -88,6 +88,7 @@ namespace Arugula.SerializedEvents
             callback.Clear();
         }
 
+#if UNITY_EDITOR
         internal void AddListener(Object target, string methodName)
         {
             callback.Add(new SerializedDelegate<T>(target, methodName));
@@ -104,6 +105,7 @@ namespace Arugula.SerializedEvents
                 }
             }
         }
+#endif
 
         public IEnumerator<T> GetEnumerator()
         {
