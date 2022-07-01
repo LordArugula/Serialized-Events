@@ -89,57 +89,8 @@ namespace Arugula.SerializedEvents.Editor
                 return;
             }
 
-            string formattedMethodLabel = GetFormattedLabel(label.text, invokeMethod);
+            string formattedMethodLabel = MethodFormatter.GetFormattedName(invokeMethod, label.text);
             EditorGUI.LabelField(rect, new GUIContent(formattedMethodLabel));
-        }
-
-        private string GetFormattedLabel(string propertyDisplayName, MethodInfo invokeMethod)
-        {
-            if (builder == null)
-            {
-                builder = new StringBuilder();
-            }
-            else
-            {
-                builder.Clear();
-            }
-
-            Type returnType = invokeMethod.ReturnType;
-            if (returnType != typeof(void))
-            {
-                builder.Append(returnType.Name)
-                    .Append(' ');
-            }
-
-            builder.Append(propertyDisplayName);
-
-            ParameterInfo[] parameterInfos = invokeMethod.GetParameters();
-            builder.Append(' ')
-                .Append('(');
-
-            if (parameterInfos.Length > 0)
-            {
-                AppendParameters(builder, parameterInfos);
-            }
-
-            builder.Append(')');
-
-            string formattedMethodLabel = builder.ToString();
-            return formattedMethodLabel;
-
-            static void AppendParameters(StringBuilder _builder, ParameterInfo[] _parameterInfos)
-            {
-                for (int i = 0; i < _parameterInfos.Length; i++)
-                {
-                    ParameterInfo parameter = _parameterInfos[i];
-                    _builder.Append(parameter.ParameterType.Name);
-                    if (i + 1 < _parameterInfos.Length)
-                    {
-                        _builder.Append(',')
-                            .Append(' ');
-                    }
-                }
-            }
         }
     }
 }

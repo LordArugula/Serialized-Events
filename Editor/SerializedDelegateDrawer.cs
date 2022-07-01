@@ -86,7 +86,8 @@ namespace Arugula.SerializedEvents.Editor
                         continue;
                     }
 
-                    menu.AddItem(new GUIContent($"{type.Name}/{method.Name}"), false, () =>
+                    string methodDisplayName = MethodFormatter.GetFormattedName(method);
+                    menu.AddItem(new GUIContent($"{type.Name}/{methodDisplayName}"), false, () =>
                     {
                         methodNameProperty.stringValue = method.Name;
                         targetProperty.objectReferenceValue = GetTargetObject(rootObject, type);
