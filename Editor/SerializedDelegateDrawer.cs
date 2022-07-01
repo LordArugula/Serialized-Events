@@ -73,9 +73,14 @@ namespace Arugula.SerializedEvents.Editor
                 targetProperty.objectReferenceValue = rootObject;
                 methodNameProperty.serializedObject.ApplyModifiedProperties();
             });
-            menu.AddSeparator("");
 
             HashSet<Type> types = GetTypesOnTarget(rootObject);
+            
+            if (types.Count > 0)
+            {
+                menu.AddSeparator("");
+            }
+
             foreach (Type type in types)
             {
                 MethodInfo[] methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
@@ -201,7 +206,7 @@ namespace Arugula.SerializedEvents.Editor
                 parameterTypes[i] = parameterInfos[i].ParameterType;
             }
 
-            MethodInfo method = targetType.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy, null, parameterTypes, null);
+            MethodInfo method = targetType.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy, null, parameterTypes, null);
 
             if (method != null && method.ReturnType != targetReturnType)
             {
