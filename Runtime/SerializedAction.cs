@@ -2,6 +2,9 @@
 
 namespace Arugula.SerializedEvents
 {
+    /// <summary>
+    /// A zero argument callback that can saved in the scene.
+    /// </summary>
     [Serializable]
     public class SerializedAction
         : SerializedEventBase<Action>
@@ -15,6 +18,9 @@ namespace Arugula.SerializedEvents
         }
     }
 
+    /// <summary>
+    /// A one argument callback that can saved in the scene.
+    /// </summary>
     [Serializable]
     public class SerializedAction<T>
         : SerializedEventBase<Action<T>>
@@ -28,6 +34,9 @@ namespace Arugula.SerializedEvents
         }
     }
 
+    /// <summary>
+    /// A two argument callback that can saved in the scene.
+    /// </summary>
     [Serializable]
     public class SerializedAction<T1, T2>
         : SerializedEventBase<Action<T1, T2>>
@@ -41,6 +50,9 @@ namespace Arugula.SerializedEvents
         }
     }
 
+    /// <summary>
+    /// A three argument callback that can saved in the scene.
+    /// </summary>
     [Serializable]
     public class SerializedAction<T1, T2, T3>
         : SerializedEventBase<Action<T1, T2, T3>>
@@ -54,6 +66,9 @@ namespace Arugula.SerializedEvents
         }
     }
 
+    /// <summary>
+    /// A four argument callback that can saved in the scene.
+    /// </summary>
     [Serializable]
     public class SerializedAction<T1, T2, T3, T4>
         : SerializedEventBase<Action<T1, T2, T3, T4>>

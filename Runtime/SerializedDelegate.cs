@@ -8,6 +8,10 @@ using Object = UnityEngine.Object;
 
 namespace Arugula.SerializedEvents
 {
+    /// <summary>
+    /// Serializes a delegate whose target is a <see cref="UnityEngine.Object"/>.
+    /// </summary>
+    /// <typeparam name="T">The delegate type.</typeparam>
     [Serializable]
     public class SerializedDelegate<T>
         where T : Delegate

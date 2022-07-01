@@ -25,7 +25,8 @@ namespace Arugula.SerializedEvents
 
         private void Awake()
         {
-            onHealthChanged.AddListener(LogHealthChange);
+            // Adding a listener at runtime
+            onHealthChanged.AddListener(KillPlayer);
         }
 
         private void Start()
@@ -38,9 +39,13 @@ namespace Arugula.SerializedEvents
             Health -= amount;
         }
 
-        public void LogHealthChange(float oldVal, float newVal)
+        private void KillPlayer(float oldVal, float newVal)
         {
-            Debug.Log($"{gameObject.name} health changed from {oldVal} -> {newVal}.");
+            if (newVal <= 0)
+            {
+                Debug.Log("Player died.");
+                Destroy(gameObject);
+            }
         }
     }
 }

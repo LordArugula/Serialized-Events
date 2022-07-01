@@ -8,10 +8,21 @@ using Object = UnityEngine.Object;
 
 namespace Arugula.SerializedEvents
 {
+    /// <summary>
+    /// Base class for all serialized events.
+    /// </summary>
+    /// <typeparam name="T">The delegate type.</typeparam>
     [Serializable]
     public abstract class SerializedEventBase<T> : IEnumerable<T>, IEnumerable
         where T : Delegate
     {
+        /// <summary>
+        /// The invocation list.
+        /// </summary>
+        /// <remarks>
+        /// We use a list of callbacks instead of a registering them all
+        /// to a single delegate so they can be "unsubscribed" in the editor 
+        /// easily.
         [SerializeField]
         private List<SerializedDelegate<T>> callback;
 
@@ -77,7 +88,7 @@ namespace Arugula.SerializedEvents
                     if (callback[i].Callback == _listener)
                     {
                         callback.RemoveAt(i);
-                        return;
+                        break;
                     }
                 }
             }
