@@ -7,5 +7,12 @@
     "author": {
         "name": "Victor Pan",
         "email": "lordarugula@outlook.com"
-    }
+    },
+    "samples": [
+        {
+            "displayName": "Simple Demo",
+            "description": "A simple demo showcasing how to use the SerializedAction.",
+            "path": "Samples~/Simple Demo"
+        }
+    ]
 }
