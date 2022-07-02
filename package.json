@@ -1,6 +1,6 @@
 {
     "name": "com.arugula.serialized-events",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "displayName": "Serialized Events",
     "description": "Allows for event callbacks to be serialized in the editor.",
     "unity": "2021.3",
