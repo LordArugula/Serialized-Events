@@ -1,7 +1,5 @@
 # Serialized-Events
-Allows for event callbacks to be serialized in the editor. This supports callbacks with zero to many parameters and a return value.
-
-Unlike Unity's `UnityEvent`, you can only serialize methods that match the parameters and return type.
+Allows for event callbacks to be serialized in the editor. There are the `SerializedAction` and `SerializedFunc`. These supports callbacks with zero to many parameters and a return value (for `SerializedFunc`). Unlike Unity's `UnityEvent`, you can only serialize methods that match the parameters and return type.
 
 # Example
 
