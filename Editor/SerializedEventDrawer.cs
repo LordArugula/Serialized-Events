@@ -32,6 +32,7 @@ namespace Arugula.SerializedEvents.Editor
                 InitializeList(property, label);
             }
 
+            reorderableList.draggable = !Application.isPlaying;
             reorderableList.DoList(position);
         }
 
