@@ -13,7 +13,8 @@ namespace Arugula.SerializedEvents
     /// </summary>
     /// <typeparam name="T">The delegate type.</typeparam>
     [Serializable]
-    public abstract class SerializedEventBase<T> : IEnumerable<T>, IEnumerable
+    public abstract class SerializedEventBase<T>
+        : IEnumerable<T>, IEnumerable
         where T : Delegate
     {
         /// <summary>

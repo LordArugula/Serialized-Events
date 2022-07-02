@@ -9,7 +9,7 @@ namespace Arugula.SerializedEvents.Editor
     {
         private static readonly StringBuilder stringBuilder = new StringBuilder();
 
-        private static Dictionary<Type, string> typeNames = new Dictionary<Type, string>()
+        private static readonly Dictionary<Type, string> typeNames = new Dictionary<Type, string>()
         {
             { typeof(string), "string" },
             { typeof(int), "int" },

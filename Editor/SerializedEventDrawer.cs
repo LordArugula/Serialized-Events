@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Text;
 
 using UnityEditor;
 
@@ -14,7 +13,6 @@ namespace Arugula.SerializedEvents.Editor
     public class SerializedEventDrawer : PropertyDrawer
     {
         private ReorderableList reorderableList;
-        private StringBuilder builder;
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {

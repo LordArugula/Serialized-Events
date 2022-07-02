@@ -75,7 +75,7 @@ namespace Arugula.SerializedEvents.Editor
             });
 
             HashSet<Type> types = GetTypesOnTarget(rootObject);
-            
+
             if (types.Count > 0)
             {
                 menu.AddSeparator("");
