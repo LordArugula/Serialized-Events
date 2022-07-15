@@ -2,7 +2,7 @@
     "name": "Arugula.SerializedEvent.Editor",
     "rootNamespace": "Arugula.SerializedEvent.Editor",
     "references": [
-        "GUID:2d351317d62fa824e8dbbcbe81738199"
+        "Arugula.SerializedEvent.Runtime"
     ],
     "includePlatforms": [
         "Editor"
